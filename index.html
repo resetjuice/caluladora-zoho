@@ -1,1 +1,385 @@
-# caluladora-zoho
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Zoho Inventory</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+        
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .result {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            border-left: 5px solid #27ae60;
+            display: none;
+        }
+        
+        .result h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .result-content {
+            font-size: 1.2em;
+            color: #27ae60;
+            font-weight: bold;
+        }
+        
+        .example {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .example h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        .example p {
+            color: #856404;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧮 Calculadora Zoho Inventory</h1>
+            <p>Convierte cantidades de receta a unidades de Zoho</p>
+        </div>
+        
+        <div class="content">
+            <div class="example">
+                <h4>📝 Ejemplos de conversión:</h4>
+                <p><strong>25g de Nuez de la India</strong> → 0.025 kg</p>
+                <p><strong>197ml de jugo de Piña</strong> → 0.4925 kg de piña fresca</p>
+                <p><strong>1ml de Vainilla</strong> → 0.001 lt</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="ingredient">Ingrediente:</label>
+                <select id="ingredient">
+                    <option value="">Seleccionar ingrediente...</option>
+                    
+                    <optgroup label="🥜 Productos Secos (gramos → kg)">
+                        <option value="gel_refrigerante">Gel Refrigerante</option>
+                        <option value="be_hamp_proteina">Be Hamp Proteína</option>
+                        <option value="cacao">Cacao</option>
+                        <option value="jalapeno_seco">Jalapeño</option>
+                        <option value="nuez_india">Nuez de la India</option>
+                        <option value="sal_rosa">Sal Rosa del Himalaya</option>
+                        <option value="pimienta_cayena">Pimienta Cayena en Polvo</option>
+                        <option value="stevia">Stevia</option>
+                        <option value="carbon_activado">Carbón Activado</option>
+                        <option value="canela">Canela</option>
+                        <option value="curcuma">Cúrcuma</option>
+                        <option value="almendras">Almendras</option>
+                        <option value="pulpa_coco">Pulpa de Coco</option>
+                    </optgroup>
+                    
+                    <optgroup label="💧 Líquidos (ml → litros)">
+                        <option value="agua_purificada">Agua Purificada</option>
+                        <option value="jugo_limon_litro">Jugo de limón en litro</option>
+                        <option value="jugo_limon_amarillo">Jugo de limón amarillo en litro</option>
+                        <option value="jugo_naranja_litro">Jugo de naranja en litro</option>
+                        <option value="jugo_toronja_litro">Jugo de toronja en litro</option>
+                        <option value="agave">Agave</option>
+                        <option value="vainilla">Vainilla</option>
+                        <option value="agua_coco">Agua de coco</option>
+                        <option value="clorofila">Clorofila Líquida</option>
+                    </optgroup>
+                    
+                    <optgroup label="🥬 Frutas Frescas (ml jugo → kg fruta)">
+                        <option value="acelga">Acelga (factor 1.3)</option>
+                        <option value="apio">Apio (factor 1.5)</option>
+                        <option value="betabel">Betabel (factor 1.6)</option>
+                        <option value="chayote">Chayote (factor 1.3)</option>
+                        <option value="espinaca">Espinaca (factor 1.7)</option>
+                        <option value="jengibre">Jengibre (factor 1.6)</option>
+                        <option value="jicama">Jícama (factor 1.5)</option>
+                        <option value="kale">Kale (factor 1.5)</option>
+                        <option value="lechuga">Lechuga (factor 1.3)</option>
+                        <option value="lima">Lima (factor 3.0)</option>
+                        <option value="manzana">Manzana (factor 1.6)</option>
+                        <option value="pepino">Pepino (factor 1.3)</option>
+                        <option value="pera">Pera (factor 2.0)</option>
+                        <option value="perejil">Perejil (factor 2.0)</option>
+                        <option value="pina">Piña (factor 2.5)</option>
+                        <option value="zanahoria">Zanahoria (factor 2.3)</option>
+                        <option value="jalapeno">Jalapeño (factor 1.6)</option>
+                    </optgroup>
+                    
+                    <optgroup label="🥤 Jugos en Galón (ml → galones)">
+                        <option value="jugo_limon_galon">Jugo de limón en galón</option>
+                        <option value="jugo_naranja_galon">Jugo de naranja en galón</option>
+                        <option value="jugo_toronja_galon">Jugo de toronja en galón</option>
+                    </optgroup>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="quantity">Cantidad que usas en la receta:</label>
+                <input type="number" id="quantity" placeholder="Ejemplo: 25, 197, 1" step="0.01">
+            </div>
+            
+            <button class="btn" onclick="calcular()">🧮 Calcular Conversión</button>
+            
+            <div id="result" class="result">
+                <h3>📊 Cantidad para Zoho Inventory:</h3>
+                <div id="result-content" class="result-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calcular() {
+            const ingredient = document.getElementById('ingredient').value;
+            const quantity = parseFloat(document.getElementById('quantity').value);
+            
+            // Validar entrada
+            if (!ingredient || !quantity || quantity <= 0) {
+                alert('Por favor selecciona un ingrediente e ingresa una cantidad válida.');
+                return;
+            }
+            
+            let result = '';
+            let zohoQuantity = 0;
+            let zohoUnit = '';
+            let originalUnit = '';
+            
+            // Realizar conversión según el ingrediente
+            switch (ingredient) {
+                // Productos secos: gramos a kilogramos
+                case 'gel_refrigerante':
+                case 'be_hamp_proteina':
+                case 'cacao':
+                case 'jalapeno_seco':
+                case 'nuez_india':
+                case 'sal_rosa':
+                case 'pimienta_cayena':
+                case 'stevia':
+                case 'carbon_activado':
+                case 'canela':
+                case 'curcuma':
+                case 'almendras':
+                case 'pulpa_coco':
+                    zohoQuantity = quantity / 1000;
+                    zohoUnit = 'kg';
+                    originalUnit = 'g';
+                    break;
+                
+                // Líquidos: mililitros a litros
+                case 'agua_purificada':
+                case 'jugo_limon_litro':
+                case 'jugo_limon_amarillo':
+                case 'jugo_naranja_litro':
+                case 'jugo_toronja_litro':
+                case 'agave':
+                case 'vainilla':
+                case 'agua_coco':
+                case 'clorofila':
+                    zohoQuantity = quantity / 1000;
+                    zohoUnit = 'lt';
+                    originalUnit = 'ml';
+                    break;
+                
+                // Frutas: mililitros de jugo a kilogramos de fruta
+                case 'acelga':
+                    zohoQuantity = (quantity / 1000) * 1.3;
+                    zohoUnit = 'kg';
+                    originalUnit = 'ml';
+                    break;
+                case 'apio':
+                    zohoQuantity = (quantity / 1000) * 1.5;
+                    zohoUnit = 'kg';
+                    originalUnit = 'ml';
+                    break;
+                case 'betabel':
+                    zohoQuantity = (quantity / 1000) * 1.6;
+                    zohoUnit = 'kg';
+                    originalUnit = 'ml';
+                    break;
+                case 'chayote':
+                    zohoQuantity = (quantity / 1000) * 1.3;
+                    zohoUnit = 'kg';
+                    originalUnit = 'ml';
+                    break;
+                case 'espinaca':
+                    zohoQuantity = (quantity / 1000) * 1.7;
+                    zohoUnit = 'kg';
+                    originalUnit = 'ml';
+                    break;
+                case 'jengibre':
+                    zohoQuantity = (quantity / 1000) * 1.6;
+                    zohoUnit = 'kg';
+                    originalUnit = 'ml';
+                    break;
+                case 'jicama':
+                    zohoQuantity = (quantity / 1000) * 1.5;
+                    zohoUnit = 'kg';
+                    originalUnit = 'ml';
+                    break;
+                case 'kale':
+                    zohoQuantity = (quantity / 1000) * 1.5;
+                    zohoUnit = 'kg';
+                    originalUnit = 'ml';
+                    break;
+                case 'lechuga':
+                    zohoQuantity = (quantity / 1000) * 1.3;
+                    zohoUnit = 'kg';
+                    originalUnit = 'ml';
+                    break;
+                case 'lima':
+                    zohoQuantity = (quantity / 1000) * 3.0;
+                    zohoUnit = 'kg';
+                    originalUnit = 'ml';
+                    break;
+                case 'manzana':
+                    zohoQuantity = (quantity / 1000) * 1.6;
+                    zohoUnit = 'kg';
+                    originalUnit = 'ml';
+                    break;
+                case 'pepino':
+                    zohoQuantity = (quantity / 1000) * 1.3;
+                    zohoUnit = 'kg';
+                    originalUnit = 'ml';
+                    break;
+                case 'pera':
+                    zohoQuantity = (quantity / 1000) * 2.0;
+                    zohoUnit = 'kg';
+                    originalUnit = 'ml';
+                    break;
+                case 'perejil':
+                    zohoQuantity = (quantity / 1000) * 2.0;
+                    zohoUnit = 'kg';
+                    originalUnit = 'ml';
+                    break;
+                case 'pina':
+                    zohoQuantity = (quantity / 1000) * 2.5;
+                    zohoUnit = 'kg';
+                    originalUnit = 'ml';
+                    break;
+                case 'zanahoria':
+                    zohoQuantity = (quantity / 1000) * 2.3;
+                    zohoUnit = 'kg';
+                    originalUnit = 'ml';
+                    break;
+                case 'jalapeno':
+                    zohoQuantity = (quantity / 1000) * 1.6;
+                    zohoUnit = 'kg';
+                    originalUnit = 'ml';
+                    break;
+                
+                // Jugos en galón: mililitros a galones
+                case 'jugo_limon_galon':
+                case 'jugo_naranja_galon':
+                case 'jugo_toronja_galon':
+                    zohoQuantity = quantity / 3785;
+                    zohoUnit = 'gal';
+                    originalUnit = 'ml';
+                    break;
+                
+                default:
+                    alert('Ingrediente no reconocido');
+                    return;
+            }
+            
+            // Mostrar resultado
+            const ingredientName = document.getElementById('ingredient').options[document.getElementById('ingredient').selectedIndex].text;
+            result = `
+                <strong>${ingredientName}</strong><br>
+                Usas en receta: ${quantity} ${originalUnit}<br>
+                <span style="font-size: 1.5em; color: #27ae60;">Registras en Zoho: ${zohoQuantity.toFixed(4)} ${zohoUnit}</span>
+            `;
+            
+            document.getElementById('result-content').innerHTML = result;
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
